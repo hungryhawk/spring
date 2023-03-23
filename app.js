@@ -3,7 +3,6 @@ const menuSlide = () => {
 
   burger.addEventListener('click', () => {
     document.querySelector('.nav-menu').classList.toggle('open');
-    // nav.classList.toggle('menu-active');
     burger.classList.toggle('active');
     burger.classList.add('white-cross');
     if (burger.classList.contains('active')) {

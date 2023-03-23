@@ -1,31 +1,33 @@
 const menuSlide = () => {
   const burger = document.querySelector('.burger');
-  //   const nav = document.querySelector('.menu-item');
 
   burger.addEventListener('click', () => {
     document.querySelector('.nav-menu').classList.toggle('open');
     // nav.classList.toggle('menu-active');
     burger.classList.toggle('active');
     burger.classList.add('white-cross');
+    if (burger.classList.contains('active')) {
+      document.body.style.overflow = 'hidden';
+    }
   });
 };
 
-const showItem = () => {
-  const itemMenu = document.querySelectorAll('.menu-item');
-  const drop = document.querySelector('.dropdown');
+const dropDown = () => {
+  const menuItem = document.querySelectorAll('.menu-item');
 
-  //   const hide = document.querySelectorAll('.hide')
+  for (let item of menuItem) {
+    item.addEventListener('click', (e) => {
+      let currTarget = e.target.dataset.id;
 
-  itemMenu.forEach((item) => {
-    item.addEventListener('click', () => {
-      console.log(item);
-      drop.classList.toggle('is-open');
+      if (currTarget) {
+        document
+          .querySelector(`[data-b = "${currTarget}"]`)
+          .classList.toggle('hide');
+      }
     });
-  });
+  }
 };
+
+dropDown();
 
 menuSlide();
-
-showItem();
-
-// showItem();

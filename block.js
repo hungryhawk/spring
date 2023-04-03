@@ -1,14 +1,12 @@
 const userCardTemplate = document.querySelector('[data-user-card]');
 const userCardContainer = document.querySelector('[data-user-container]');
 const searchInput = document.querySelector('[data-search]');
-// const icon = document.querySelector('.icon');
-// const searchWrapper = document.querySelector('.search-wrapper');
+const icon = document.querySelector('.icon');
+const searchWrapper = document.querySelector('.search-wrapper');
 
-
-// icon.addEventListener('click', () => {
-//   searchWrapper.classList.toggle('super');
-// });
-
+icon.addEventListener('click', () => {
+  searchWrapper.classList.toggle('super');
+});
 
 const projectCard = [
   {
@@ -49,55 +47,55 @@ const projectCard = [
   },
 ];
 
-// let blocks = [];
+let blocks = [];
 
-// function filtering(e) {
-//   const value = e.target.value.toLowerCase().trim();
-//   const input = document.querySelector('.input');
-//   let interval;
-//   let counter = 0;
+function filtering(e) {
+  const value = e.target.value.toLowerCase().trim();
+  const input = document.querySelector('.input');
+  let interval;
+  let counter = 0;
 
-//   const noFound = document.querySelector('.out');
+  const noFound = document.querySelector('.out');
 
-//   input.addEventListener('keyup', () => {
-//     clearTimeout(interval);
+  input.addEventListener('keyup', () => {
+    clearTimeout(interval);
 
-//     interval = setTimeout(() => {
-//       if (value != '') {
-//         blocks.forEach((block) => {
-//           if (
-//             block.header.toLowerCase().includes(value) ||
-//             block.description.toLowerCase().includes(value)
-//           ) {
-//             block.element.classList.remove('h');
-//           } else {
-//             block.element.classList.add('h');
-//             counter++;
-//           }
-//         });
-//         if (counter == 6) {
-//           noFound.classList.remove('h');
-//           noFound.classList.add('dd');
-//           noFound.innerHTML = 'No result!';
-//         } else {
-//           noFound.classList.add('h');
-//         }
-//       } else {
-//         blocks.forEach((block) => {
-//           if (counter >= 0) {
-//             noFound.classList.add('h');
-//           }
+    interval = setTimeout(() => {
+      if (value != '') {
+        blocks.forEach((block) => {
+          if (
+            block.header.toLowerCase().includes(value) ||
+            block.description.toLowerCase().includes(value)
+          ) {
+            block.element.classList.remove('h');
+          } else {
+            block.element.classList.add('h');
+            counter++;
+          }
+        });
+        if (counter == 6) {
+          noFound.classList.remove('h');
+          noFound.classList.add('dd');
+          noFound.innerHTML = 'No result!';
+        } else {
+          noFound.classList.add('h');
+        }
+      } else {
+        blocks.forEach((block) => {
+          if (counter >= 0) {
+            noFound.classList.add('h');
+          }
 
-//           block.element.classList.remove('h');
-//         });
-//       }
-//     }, 300);
-//   });
-// }
+          block.element.classList.remove('h');
+        });
+      }
+    }, 300);
+  });
+}
 
-// searchInput.addEventListener('input', filtering);
+searchInput.addEventListener('input', filtering);
 
-projectCard.map((block) => {
+blocks = projectCard.map((block) => {
   const card = userCardTemplate.content.cloneNode(true).children[0];
   const articleHeader = card.querySelector('[data-header]');
   const articleText = card.querySelector('[data-text]');

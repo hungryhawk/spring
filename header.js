@@ -1,7 +1,7 @@
-let data = [
+let navMenu = [
   {
     title: 'Why spring',
-    items: [
+    menuItem: [
       'Overview',
       'Microservices',
       'Reactive',
@@ -15,12 +15,12 @@ let data = [
   },
   {
     title: 'Learn',
-    items: ['Overview', 'Quickstart', 'Guides', 'Blog'],
+    menuItem: ['Overview', 'Quickstart', 'Guides', 'Blog'],
     id: 2,
   },
   {
     title: 'Projects',
-    items: [
+    menuItem: [
       'Overview',
       'Spring Boot',
       'Spring Framework',
@@ -36,24 +36,23 @@ let data = [
     ],
     id: 3,
   },
-  { title: 'Academy', items: ['Courses', 'Get Certified'], id: 4 },
-  { title: 'Support', items: ['Overview', 'Security Advisories'], id: 5 },
-  { title: 'Community', items: ['Overview', 'Events', 'Team'], id: 6 },
+  { title: 'Academy', menuItem: ['Courses', 'Get Certified'], id: 4 },
+  { title: 'Support', menuItem: ['Overview', 'Security Advisories'], id: 5 },
+  { title: 'Community', menuItem: ['Overview', 'Events', 'Team'], id: 6 },
 ];
 
 const menuSlide = () => {
   const burger = document.querySelector('.burger');
-
   burger.addEventListener('click', () => {
     document.querySelector('.nav-menu').classList.toggle('open');
     burger.classList.toggle('active');
     burger.classList.add('white-cross');
     if (burger.classList.contains('active')) {
       document.body.style.overflow = 'hidden';
-      document.querySelector('.search-wrapper').classList.add('h');
+      document.querySelector('.search-wrapper').classList.add('hide');
     } else {
       document.body.style.overflow = 'auto';
-      document.querySelector('.search-wrapper').classList.remove('h');
+      document.querySelector('.search-wrapper').classList.remove('hide');
     }
   });
 };
@@ -64,76 +63,76 @@ function createNavMenu() {
   const userDataTemplate = document.querySelector('[data-header-template]');
   const headerContainer = document.querySelector('[data-container]');
 
-  for (let i = 0; i < data.length; i++) {
+  navMenu.forEach((item, index) => {
     const grid = userDataTemplate.content.cloneNode(true).children[0];
     const header = grid.querySelector('[data-header]');
     const dropDown = grid.querySelectorAll('[data-drop]');
     const icon = grid.querySelector('[data-icon]');
-    header.textContent = data[i].title;
-    header.setAttribute('data-id', data[i].id);
-    for (let k = 0; k < dropDown.length; k++) {
-      data[i].items.map((el) => {
-        dropDown[k].innerHTML += `<li 
-        class="dropdown-item">
+
+    header.textContent = navMenu[index].title;
+    header.setAttribute('data-id', navMenu[index].id);
+
+    dropDown.forEach((block, idx) => {
+      navMenu[index].menuItem.map((el) => {
+        dropDown[idx].innerHTML += `
+          <li class="dropdown-item">
             <a class="dropdown-link">${el}</a>
-          </li>`;
+          </li>
+        `;
       });
-    }
+    });
     header.append(icon);
     headerContainer.append(grid);
-  }
+  });
 }
 
 function createBurgerIsBlock() {
-  let flag = false;
+  let checkItems = false;
+
   document.querySelector('.burger').addEventListener('click', () => {
-    if (!flag) {
-      const allMenuLink = document.querySelectorAll('.menu-link');
-      for (let i = 0; i < allMenuLink.length; i++) {
-        const arrow = document.createElement('span');
-        arrow.classList.add('arrow');
-        allMenuLink[i].append(arrow);
-      }
-
-      allMenuLink.forEach((item) => {
-        item.addEventListener('click', (e) => {
-          e.target.children[1].classList.toggle('arrow-reverse');
-        });
-      });
-
+    if (!checkItems) {
       const allMenuItem = document.querySelectorAll('.menu-item');
 
-      for (let i = 0; i < allMenuItem.length; i++) {
+      allMenuItem.forEach((item, index) => {
+        const arrow = document.createElement('span');
+        arrow.classList.add('arrow');
+        item.prepend(arrow);
         const isBlock = document.createElement('div');
 
         isBlock.classList.add('is-block');
         isBlock.classList.add('hide');
-        isBlock.setAttribute('data-b', data[i].id);
+        isBlock.setAttribute('data-b', navMenu[index].id);
 
-        allMenuItem[i].after(isBlock);
+        item.after(isBlock);
 
-        let isReal = false;
-        allMenuItem.forEach((item) => {
-          item.addEventListener('click', (e) => {
-            let currTarget = e.target.dataset.id;
+        let isExist = false;
+        item.addEventListener('click', (e) => {
+          if (e.target.dataset.id === isBlock.getAttribute('data-b')) {
+            isBlock.classList.toggle('hide');
+            arrow.classList.toggle('arrow-reverse');
 
-            if (currTarget == isBlock.getAttribute('data-b')) {
-              isBlock.classList.toggle('hide');
-              if (!isReal) {
-                data[i].items.map((el) => {
-                  isBlock.innerHTML += `<a class="block-link">${el}</a>`;
-                });
-              }
-              isReal = true;
+            if (!isExist) {
+              navMenu[index].menuItem.map((el) => {
+                isBlock.innerHTML += `<a class="block-link">${el}</a>`;
+              });
             }
+          }
+          const cross = document.querySelector('.white-cross');
+
+          cross.addEventListener('click', () => {
+            isBlock.classList.add('hide');
+            arrow.classList.remove('arrow-reverse');
           });
+          isExist = true;
         });
-      }
-      flag = true;
+        if (navMenu[index].menuItem.length === 0) {
+          arrow.remove();
+          isBlock.remove();
+        }
+      });
     }
+    checkItems = true;
   });
 }
-
-createNavMenu();
-
 createBurgerIsBlock();
+createNavMenu();

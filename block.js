@@ -47,67 +47,57 @@ const projectCard = [
   },
 ];
 
-let blocks = [];
+function generateProjectCard(cardsData) {
+  let blocks = [];
 
-function filtering(e) {
-  const value = e.target.value.toLowerCase().trim();
-  const input = document.querySelector('.input');
-  let interval;
-  let counter = 0;
-
-  const noFound = document.querySelector('.out');
-
-  input.addEventListener('keyup', () => {
-    clearTimeout(interval);
-
-    interval = setTimeout(() => {
-      if (value != '') {
-        blocks.forEach((block) => {
-          if (
-            block.header.toLowerCase().includes(value) ||
-            block.description.toLowerCase().includes(value)
-          ) {
-            block.element.classList.remove('h');
-          } else {
-            block.element.classList.add('h');
-            counter++;
-          }
-        });
-        if (counter == 6) {
-          noFound.classList.remove('h');
-          noFound.classList.add('dd');
-          noFound.innerHTML = 'No result!';
-        } else {
-          noFound.classList.add('h');
-        }
-      } else {
-        blocks.forEach((block) => {
-          if (counter >= 0) {
-            noFound.classList.add('h');
-          }
-
-          block.element.classList.remove('h');
-        });
-      }
-    }, 300);
+  cardsData.forEach((card, index) => {
+    blocks.push(`
+      <article class="article-item">
+          <img data-image class="article-img" src="${card.img}" />
+          <div class="article-wrapper">
+            <h3 class="article-header" data-header>${card.header}</h3>
+            <p class="article-text" data-text>${card.description}</p>
+          </div>
+        </article>
+      `);
   });
+
+  return blocks;
 }
 
-searchInput.addEventListener('input', filtering);
+const input = document.querySelector('.input');
 
-blocks = projectCard.map((block) => {
-  const card = userCardTemplate.content.cloneNode(true).children[0];
-  const articleHeader = card.querySelector('[data-header]');
-  const articleText = card.querySelector('[data-text]');
-  const articleImage = card.querySelector('[data-image]');
-  articleHeader.textContent = block.header;
-  articleText.textContent = block.description;
-  articleImage.src = block.img;
-  userCardContainer.append(card);
-  return {
-    image: block.img,
-    header: block.header,
-    description: block.description,
-    element: card,
-  };
+let interval;
+
+input.addEventListener('keyup', (e) => {
+  clearInterval(interval);
+
+  interval = setTimeout(() => {
+    const inputValue = e.target.value;
+    filtering(inputValue);
+
+    if (document.querySelector('.wrapper-section').children.length === 0) {
+      document.querySelector('.wrapper-section').innerHTML = `
+        <div class="dd">No result!</div>
+      `;
+    }
+  }, 500);
 });
+
+function filtering(searchValue) {
+  const rgx = new RegExp(searchValue, 'i');
+
+  let filteredProjectCard = projectCard.filter((card) => {
+    if (rgx.test(card.title) || rgx.test(card.header)) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  document.querySelector('.wrapper-section').innerHTML =
+    generateProjectCard(filteredProjectCard).join('');
+}
+
+const cardsArr = generateProjectCard(projectCard);
+document.querySelector('.wrapper-section').innerHTML = cardsArr.join('');
